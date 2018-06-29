@@ -1,23 +1,33 @@
 #include <iostream>
 #include <vector>
-
+#include <algorithm>
 #include <map>
 
 using namespace std;
 
-void printCompare(const map <string, vector<string>>& routes, const string& stop){
+void printCompare(const map <string, vector<string>>& routes, const string& stop, const string& bus){
     bool isExist = false;
     for(const auto& route : routes){
             vector<string> list = route.second;
-            for(const auto& t : list){
-                if (t == stop){
-                    cout << t << " ";
+            for(const auto& stop_name : list){
+                if (stop_name == stop && bus != route.first){
+                    cout << route.first << " ";
                     isExist = true;
                 }
             }
-            cout << endl;
         }
-    if (!isExist) cout << "no interchange\n";
+    if (!isExist) cout << "no interchange";
+}
+
+void isBuses(const map <string, vector<string>>& routes, const string& stop){
+    bool bus = false;
+    for(const auto& route : routes){
+        if(find(route.second.begin(), route.second.end(), stop) != route.second.end()){
+           cout << route.first << " ";
+           bus = true;
+        }
+    }
+    if(!bus) cout << "No stop";
 }
 
 int main() {
@@ -44,12 +54,8 @@ int main() {
         }else if(command == "BUSES_FOR_STOP"){
             string stop;
             cin >> stop;
-            if(true){
-                cout << "No stop\n";
-            }else {
-
-            }
-
+            isBuses(routes, stop);
+            cout << endl;
         }else if (command == "STOPS_FOR_BUS"){
             string bus;
             cin >> bus;
@@ -58,7 +64,7 @@ int main() {
             }else {
                 for(const auto& stop : routes[bus]){
                     cout << "Stop " << stop << ": ";
-                       printCompare(routes, stop);
+                       printCompare(routes, stop, bus);
                     cout << endl;
                 }
             }
