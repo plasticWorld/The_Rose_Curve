@@ -19,12 +19,17 @@ void printCompare(const map <string, vector<string>>& routes, const string& stop
     if (!isExist) cout << "no interchange";
 }
 
-void isBuses(const map <string, vector<string>>& routes, const string& stop){
+void isBuses(const map <string, vector<string>>& routes, const string& stop, const vector<string>& order){
     bool bus = false;
-    for(const auto& route : routes){
-        if(find(route.second.begin(), route.second.end(), stop) != route.second.end()){
-           cout << route.first << " ";
-           bus = true;
+    for(string number : order){
+
+        for (const auto& route : routes){
+            vector<string> list = route.second;
+            if(find(list.begin(), list.end(), stop) != list.end()){
+               cout << number << " ";
+               bus = true;
+               break;
+            }
         }
     }
     if(!bus) cout << "No stop";
@@ -34,7 +39,7 @@ int main() {
     int n;
     cin >> n;
     map <string, vector<string>> routes;
-
+    vector<string> order;
     for (int i = 0; i < n; i++){
         string command;
         cin >> command;
@@ -49,12 +54,13 @@ int main() {
                 cin >> tmp_s;
                 temp.push_back(tmp_s);
             }
+            order.push_back(tmp);
             routes[tmp] = temp;
 
         }else if(command == "BUSES_FOR_STOP"){
             string stop;
             cin >> stop;
-            isBuses(routes, stop);
+                isBuses(routes, stop, order);
             cout << endl;
         }else if (command == "STOPS_FOR_BUS"){
             string bus;
