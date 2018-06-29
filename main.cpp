@@ -20,13 +20,11 @@ void STOPS_FOR_BUS(const map <int, vector<string>>& routesInputOrder,
 }
 
 void BUSES_FOR_STOP(const map <int, vector<string>>& routesInputOrder,
-             const string& stop, const vector<string>& order){
+             const string& stop, const vector<string>& order, bool& areThere){
     for (const auto& route : routesInputOrder){
         if(find(route.second.begin(), route.second.end(), stop) != route.second.end()){
             cout << order[route.first] << " ";
-        }else {
-            cout << "No stop";
-            break;
+            areThere = false;
         }
     }
 }
@@ -61,9 +59,9 @@ int main() {
 
         }else if(command == "BUSES_FOR_STOP"){
             cin >> stop;
-            if(!(routes.empty())){
-                BUSES_FOR_STOP(routesInputOrder, stop, order);
-            }else cout << "No stop";
+            bool areThere = true;
+            BUSES_FOR_STOP(routesInputOrder, stop, order, areThere);
+            if (areThere) cout << "No stop";
             cout << endl;
 
         }else if (command == "STOPS_FOR_BUS"){
