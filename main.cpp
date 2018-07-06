@@ -1,95 +1,71 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <map>
 #include <string>
+#include <map>
+
 using namespace std;
 
-void STOPS_FOR_BUS(const map <int, vector<string>>& routesInputOrder,
-                  const string& stop, const string& bus, const vector<string>& order){
-    bool isExist = false;
-    for(const auto& route : routesInputOrder){
-            for(const auto& stop_name : route.second){
-                if (stop_name == stop && bus != order[route.first]){
-                    cout << order[route.first] << " ";
-                    isExist = true;
-                }
-            }
-        }
-    if (!isExist) cout << "no interchange";
-}
+class Person {
+public:
+  void ChangeFirstName(int year, const string& first_name) {
+      list_f[year]=first_name;
+  }
+  void ChangeLastName(int year, const string& last_name) {
+      list_l[year]=last_name;
+  }
+  string GetFullName(int year) {
+      int target_year = year;
+      for(auto& y: list_f, list_l){
 
-void BUSES_FOR_STOP(const map <int, vector<string>>& routesInputOrder,
-             const string& stop, const vector<string>& order, bool& areThere){
-    for (const auto& route : routesInputOrder){
-        if(find(route.second.begin(), route.second.end(), stop) != route.second.end()){
-            cout << order[route.first] << " ";
-            areThere = false;
-        }
-    }
-}
+      }
+      if(list_f.empty() && list_l.empty()){
+          return "Incognito";
+      }else {
 
+      }
+
+
+
+
+
+
+
+      if(list_f.count(year) == 0 && list_l.count(year) != 0){
+          return list_l[year] + "with unknown first name";
+      }else if(list_l.count(year) == 0 && list_f.count(year) != 0){
+          return list_f[year] + "with unknown last name";
+      }else {
+          return list_f[year] + list_l[year];
+      }
+  }
+private:
+  string first_name;
+  string last_name;
+  map<int, string> list_f;
+  map<int, string> list_l;
+  // приватные поля
+};
 
 int main() {
-    int n, j(0);
-    string command, stop, bus;
-    cin >> n;
+  Person person;
 
-    map <string, vector<string>> routes;
-    map <int, vector<string>> routesInputOrder;
-    vector<string> order;
+  person.ChangeFirstName(1965, "Polina");
+  person.ChangeLastName(1967, "Sergeeva");
+  for (int year : {1900, 1965, 1990}) {
+    cout << person.GetFullName(year) << endl;
+  }
 
-    for (int i = 0; i < n; i++){
-        cin >> command;
+  person.ChangeFirstName(1970, "Appolinaria");
+  for (int year : {1969, 1970}) {
+    cout << person.GetFullName(year) << endl;
+  }
 
-        if(command == "NEW_BUS"){
-            string busNumber, busStop;
-            cin >> busNumber;
-            order.push_back(busNumber);
-
-            int c(0);
-            cin >> c;
-
-            for (int i = 0; i < c; i++){
-                cin >> busStop;
-                routes[busNumber].push_back(busStop);
-                routesInputOrder[j].push_back(busStop);
-            }
-            j++;
-
-        }else if(command == "BUSES_FOR_STOP"){
-            cin >> stop;
-            bool areThere = true;
-            BUSES_FOR_STOP(routesInputOrder, stop, order, areThere);
-            if (areThere) cout << "No stop";
-            cout << endl;
-
-        }else if (command == "STOPS_FOR_BUS"){
-            cin >> bus;
-            if (routes.count(bus)==0){
-                cout <<"No bus\n";
-            }else {
-                for(const auto& stop : routes[bus]){
-                    cout << "Stop " << stop << ": ";
-                       STOPS_FOR_BUS(routesInputOrder, stop, bus, order);
-                    cout << endl;
-                }
-            }
-
-        }else if (command == "ALL_BUSES"){
-            if(routes.empty()){
-                cout << "No buses\n";
-            }else {
-                for (const auto& e : routes){
-                    cout << "Bus " << e.first << ": ";
-                    for(const auto& s : e.second){
-                        cout << s << " ";
-                    }
-                    cout << endl;
-                }
-            }
-        }
-    }
+  person.ChangeLastName(1968, "Volkova");
+  for (int year : {1969, 1970}) {
+    cout << person.GetFullName(year) << endl;
+  }
 
   return 0;
 }
+
