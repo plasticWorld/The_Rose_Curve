@@ -6,41 +6,40 @@
 
 
 namespace Ui {
-	class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
-	Q_OBJECT
+    Q_OBJECT
 
     public:
-	explicit MainWindow (QWidget *parent = 0);
-	~MainWindow();
+    explicit MainWindow (QWidget *parent = 0);
+    ~MainWindow();
 
     private slots:
-	void on_BuildButton_clicked();
-	void on_DefaultButton_clicked();
-	void slotTimer();
+    void on_BuildButton_clicked();
+    void on_DefaultButton_clicked();
+    void slotTimer();
 
     private:
-	int pointCount = 0;
-	int A = 0;
-	int B = 0;
-	int C = 0;
-	int timeElapsed;
-	int key = 0;
-
-	Ui::MainWindow *ui;
-	QVector<QCPCurve *> rounds;// = QVector<QCPCurve *> (1);
-	QMap<int, QVector<QCPCurveData>> pointsOfGrid;
-	QTimer *timer = new QTimer (this);
-	QCPItemTracer *curveTracer;
-	QCPCurve *curveByPoints;
-	QVector<double> x2/*(pointCount)*/, y2/*(pointCount)*/;
+    int pointCount = 0;
+    int timeElapsed;
+    int key = 0;
+	int A;
+	int B;
+	int C;
+    Ui::MainWindow *ui;
+    QVector<QCPCurve *> rounds;// = QVector<QCPCurve *> (1);
+    QMap<int, QVector<QCPCurveData>> pointsOfGrid;
+    QTimer *timer = new QTimer (this);
+    QCPItemTracer *curveTracer;
+    QCPCurve *curveByPoints;
+    QVector<double> x2/*(pointCount)*/, y2/*(pointCount)*/;
 
 	int setPointCount();
 	void setupRoseCurve (QCustomPlot *widget);
-	void setupDefaultValues();
-	void areaCleaner();
+    void setupDefaultValues();
+    void areaCleaner();
 	void forGridView (QCustomPlot *widget);
 };
 

@@ -33,13 +33,14 @@ void MainWindow::on_BuildButton_clicked() {//при нажатии на кноп
     //область построения кривой отчищается при каждом нажатии
     areaCleaner();
     //снимаем значения коэффициентов
-    A = ui->AFactor->value();
-    B = ui->BFactor->value();
-    C = ui->CFactor->value();
+	A = ui->AFactor->value();
+	B = ui->BFactor->value();
+	C = ui->CFactor->value();
+
     //вызываем функцию построения кривой
-    setupRoseCurve (ui->widget);
+	setupRoseCurve (ui->widget);
     //вызываем функцию построения сетки
-    forGridView (ui->widget);
+	forGridView (ui->widget);
     //обновление поверхности области построения кривой (widget)
     ui->widget->replot();
 }
@@ -116,10 +117,12 @@ void MainWindow::forGridView (QCustomPlot *widget) {//внешний вид и �
 
 void MainWindow::setupRoseCurve (QCustomPlot *widget) {
 
+
+
     //создаем кривую-подложку
     QCPCurve *newCurve = new QCPCurve (widget->xAxis, widget->yAxis);
     //количество точек построения
-    pointCount = setPointCount();
+	pointCount = setPointCount();
     //вектор координат
     QVector <QCPCurveData> temp (pointCount);
 
@@ -184,90 +187,91 @@ void MainWindow::setupRoseCurve (QCustomPlot *widget) {
     tracer->setSize (SizeTracer);//устанавливаем значение трекера
 
     timeElapsed = 0;//переменная для отсчета времени
-    connect (timer, SIGNAL (timeout()), this, SLOT (slotTimer()));
+	connect (timer, SIGNAL (timeout()), this, SLOT (slotTimer()));
     timer->start (0); // запускаем таймер
 }
 
 int MainWindow::setPointCount() {
     const int halfTurn = 180;
 
-	if ((B % 2 != 0 && B % C == 0) || B == C || (B == 6 && C == 2)) {
-		return halfTurn + 1;
-	} else if ((B == 8 && C == 1) || (B == 6 && C == 1)
-	           || (B == 4 && C == 1) || (B == 8 && C == 2)
-	           || (B == 2 && C == 1) || (B == 4 && C == 2)
-	           || (B == 6 && C == 3)) {
+    if ((B % 2 != 0 && B % C == 0) || B == C || (B == 6 && C == 2)) {
+        return halfTurn + 1;
+    } else if ((B == 8 && C == 1) || (B == 6 && C == 1)
+               || (B == 4 && C == 1) || (B == 8 && C == 2)
+               || (B == 2 && C == 1) || (B == 4 && C == 2)
+               || (B == 6 && C == 3)) {
 
-		return halfTurn * 2 + 1;
+        return halfTurn * 2 + 1;
 
-	} else if ((B == 7 && C == 3) || (B == 5 && C == 3)
-	           || (B == 1 && C == 3) || (B == 2 && C == 6)
-	           || (B == 8 && C == 4) || (B == 3 && C == 9)) {
-		return halfTurn * 3 + 1;
-	} else if ((B == 9 && C == 2) || (B == 7 && C == 2)
-	           || (B == 5 && C == 2) || (B == 3 && C == 2)
-	           || (B == 6 && C == 4) || (B == 9 && C == 6)
-	           || (B == 1 && C == 2) || (B == 2 && C == 4)
-	           || (B == 3 && C == 6) || (B == 4 && C == 8)) {
+    } else if ((B == 7 && C == 3) || (B == 5 && C == 3)
+               || (B == 1 && C == 3) || (B == 2 && C == 6)
+               || (B == 8 && C == 4) || (B == 3 && C == 9)) {
+        return halfTurn * 3 + 1;
+    } else if ((B == 9 && C == 2) || (B == 7 && C == 2)
+               || (B == 5 && C == 2) || (B == 3 && C == 2)
+               || (B == 6 && C == 4) || (B == 9 && C == 6)
+               || (B == 1 && C == 2) || (B == 2 && C == 4)
+               || (B == 3 && C == 6) || (B == 4 && C == 8)) {
 
-		return halfTurn * 4 + 1;
+        return halfTurn * 4 + 1;
 
-	} else if ((B == 9 && C == 5) || (B == 7 && C == 5)
-	           || (B == 1 && C == 5) || (B == 3 && C == 5)) {
+    } else if ((B == 9 && C == 5) || (B == 7 && C == 5)
+               || (B == 1 && C == 5) || (B == 3 && C == 5)) {
 
-		return halfTurn * 5 + 1;
+        return halfTurn * 5 + 1;
 
-	} else if ((B == 8 && C == 3) || (B == 4 && C == 3)
-	           || (B == 8 && C == 6) || (B == 2 && C == 3)
-	           || (B == 4 && C == 6)  ||(B == 6 && C == 9)
-	           || (B == 8 && C == 1)) {
+    } else if ((B == 8 && C == 3) || (B == 4 && C == 3)
+               || (B == 8 && C == 6) || (B == 2 && C == 3)
+               || (B == 4 && C == 6)  ||(B == 6 && C == 9)
+               || (B == 8 && C == 1)) {
 
-		return halfTurn * 6 + 1;
+        return halfTurn * 6 + 1;
 
-	} else if ((B == 9 && C == 7) || (B == 5 && C == 7)
-	           || (B == 3 && C == 7) || (B == 1 && C == 7)) {
+    } else if ((B == 9 && C == 7) || (B == 5 && C == 7)
+               || (B == 3 && C == 7) || (B == 1 && C == 7)) {
 
-		return halfTurn * 7 + 1;
+        return halfTurn * 7 + 1;
 
-	} else if ((B == 9 && C == 4) || (B == 7 && C == 4)
-	           || (B == 5 && C == 4) || (B == 3 && C == 4)
-	           || (B == 6 && C == 8) || (B == 1 && C == 4)
-	           || (B == 2 && C == 8)) {
+    } else if ((B == 9 && C == 4) || (B == 7 && C == 4)
+               || (B == 5 && C == 4) || (B == 3 && C == 4)
+               || (B == 6 && C == 8) || (B == 1 && C == 4)
+               || (B == 2 && C == 8)) {
 
-		return halfTurn * 8 + 1;
+        return halfTurn * 8 + 1;
 
-	} else if ((B == 7 && C == 9) || (B == 5 && C == 9)
-	           || (B == 1 && C == 9)) {
+    } else if ((B == 7 && C == 9) || (B == 5 && C == 9)
+               || (B == 1 && C == 9)) {
 
-		return halfTurn * 9 + 1;
+        return halfTurn * 9 + 1;
 
-	} else if ((B % 2 == 0 && C == 5)) {
+    } else if ((B % 2 == 0 && C == 5)) {
 
-		return halfTurn * 10 + 1;
+        return halfTurn * 10 + 1;
 
-	} else if ((B == 7 && C == 6) || (B == 5 && C == 6)
-	           || (B == 1 && C == 6)) {
+    } else if ((B == 7 && C == 6) || (B == 5 && C == 6)
+               || (B == 1 && C == 6)) {
 
-		return halfTurn * 12 + 1;
+        return halfTurn * 12 + 1;
 
-	} else if ((B % 2 == 0 && C == 7)) {
+    } else if ((B % 2 == 0 && C == 7)) {
 
-		return halfTurn * 14 + 1;
+        return halfTurn * 14 + 1;
 
-	} else if (C == 8 && B % 2 == 1) {
+    } else if (C == 8 && B % 2 == 1) {
 
-		return halfTurn * 16 + 1;
+        return halfTurn * 16 + 1;
 
-	} else if (B % 2 == 0 && C == 9) {
+    } else if (B % 2 == 0 && C == 9) {
 
-		return halfTurn * 18 + 1;
+        return halfTurn * 18 + 1;
 
-	} else { return 180 + 1; }
+    } else { return 180 + 1; }
 }
 
 void MainWindow::slotTimer() {
     key = timeElapsed;// time
     double x, y;
+
 
     if (key < pointCount) { // add point
 
@@ -283,7 +287,7 @@ void MainWindow::slotTimer() {
 
     curveByPoints->setData (x2, y2);
     timeElapsed += 2;
-	ui->widget->replot();
+    ui->widget->replot();
 }
 
 void MainWindow::areaCleaner() {
