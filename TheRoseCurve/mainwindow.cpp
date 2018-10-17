@@ -20,8 +20,11 @@ void MainWindow::setupDefaultValues() {//значения по умолчани�
     ui->BTrackerSlider->setValue (209);
     //Значения коэффициентов в уравнении
     ui->AFactor->setValue (3);
+    ui->AFactor->setMaximum (20);
     ui->BFactor->setValue (2);
+    ui->BFactor->setMaximum (20);
     ui->CFactor->setValue (5);
+    ui->CFactor->setMaximum (20);
     //Толщина линии
     ui->SizeLineSlider->setValue (4);
     //Размер трекера
@@ -33,35 +36,32 @@ void MainWindow::on_BuildButton_clicked() {//при нажатии на кноп
     //область построения кривой отчищается при каждом нажатии
     areaCleaner();
     //снимаем значения коэффициентов
-	A = ui->AFactor->value();
-	B = ui->BFactor->value();
-	C = ui->CFactor->value();
-
+    A = ui->AFactor->value();
+    B = ui->BFactor->value();
+    C = ui->CFactor->value();
     //вызываем функцию построения кривой
-	setupRoseCurve (ui->widget);
+    setupRoseCurve (ui->widget);
     //вызываем функцию построения сетки
-	forGridView (ui->widget);
+    forGridView (ui->widget);
     //обновление поверхности области построения кривой (widget)
     ui->widget->replot();
 }
 
-void MainWindow::forGridView (QCustomPlot *widget) {//внешний вид и координаты сетки
+void MainWindow::forGridView (QCustomPlot
+                              *widget) {//внешний вид и координаты сетки
     //настраиваем внешний вид пера для отрисовки линий сетки
     QPen penForGrid (QColor (80, 80, 80, 200), //цвет в rbg + альфа-канал
                      1, //толщина линии
                      Qt::DotLine); //тип линии(пунктирная)
-                     //Qt::MiterJoin); //
-    const int POINTS_FOR_GRID = 360; //количество точек для линий сетки
+    const int POINTS_FOR_GRID = 360; //количество точек сетки
     //шаг основных делений на оси
     QSharedPointer<QCPAxisTickerFixed> fixedTicker (new QCPAxisTickerFixed);
     widget->xAxis->setTicker (fixedTicker);
     widget->yAxis->setTicker (fixedTicker);
     fixedTicker->setTickStep (1.0); // шаг основных делений осей
-    fixedTicker->setScaleStrategy (
-            QCPAxisTickerFixed::ssNone);
-
-    auto radiusOfPetals = A; //радиус наибольшего круга сетки равен коэффициенту
-                             //задающему длину лепестков
+    fixedTicker->setScaleStrategy (QCPAxisTickerFixed::ssNone);
+    auto radiusOfPetals = A; //радиус наибольшего круга сетки равен
+    //задающему длину лепестков
     auto range = radiusOfPetals * 1.2;
     //устанавливаем интервалы области построения осям
     widget->xAxis->setRange (range * (-1), range);
@@ -80,7 +80,7 @@ void MainWindow::forGridView (QCustomPlot *widget) {//внешний вид и �
         }
 
         pointsOfGrid.insert (j, temp);//добавляем ключ и значение
-                         //(радиус и соответствующие ему координаты окружности)
+        //(радиус и соответствующие ему координаты окружности)
     }
 
     //задаем новый размер
@@ -116,19 +116,17 @@ void MainWindow::forGridView (QCustomPlot *widget) {//внешний вид и �
 }
 
 void MainWindow::setupRoseCurve (QCustomPlot *widget) {
-
-
-
     //создаем кривую-подложку
     QCPCurve *newCurve = new QCPCurve (widget->xAxis, widget->yAxis);
     //количество точек построения
-	pointCount = setPointCount();
+    pointCount = setPointCount();
     //вектор координат
     QVector <QCPCurveData> temp (pointCount);
 
     for (int i = 0; i < pointCount; i++) {
 
-        double theta = (i / 180.0) * M_PI; //переводим градусы в радианы
+        double theta = (i / 180.0) *
+                       M_PI; //переводим градусы в радианы
         //формула кривой в переводе на декартову систему из полярных координат
         temp[i] = QCPCurveData (i,
                                 A * qSin (((B * 1.0) / (1.0 * C)) * theta) * qCos (1 * theta),
@@ -159,10 +157,8 @@ void MainWindow::setupRoseCurve (QCustomPlot *widget) {
     curveByPoints = new QCPCurve (widget->xAxis, widget->yAxis);
     curveByPoints->setPen (penForCurve);
     curveByPoints->setAntialiased (1);
-
     newCurve->setPen (penForDrawCurve);
     newCurve->setAntialiased (1);//включаем сглаживание
-
     //создаем трекер
     QCPItemTracer *tracer = new QCPItemTracer (ui->widget);
     curveTracer = tracer;
@@ -184,94 +180,50 @@ void MainWindow::setupRoseCurve (QCustomPlot *widget) {
     tracer->setAntialiased (0);//отключаем сглаживание
     //берем значение размера трекера
     int SizeTracer = ui->SizeTracerSlider->value();
-    tracer->setSize (SizeTracer);//устанавливаем значение трекера
-
+    tracer->setSize (
+            SizeTracer);//устанавливаем значение трекера
     timeElapsed = 0;//переменная для отсчета времени
-	connect (timer, SIGNAL (timeout()), this, SLOT (slotTimer()));
+    connect (timer, SIGNAL (timeout()), this, SLOT (slotTimer()));
     timer->start (0); // запускаем таймер
 }
 
+int gcd (int a, int b) {
+	return (b == 0) ? abs(a) : gcd(b, a % b);
+}
+
+void reduce (int &a, int &b) {
+
+    int c = gcd (a, b);
+    a /= c;
+    b /= c;
+}
+
 int MainWindow::setPointCount() {
+
     const int halfTurn = 180;
+    int petalsAmount = 0;
+    reduce (B, C);
 
-    if ((B % 2 != 0 && B % C == 0) || B == C || (B == 6 && C == 2)) {
-        return halfTurn + 1;
-    } else if ((B == 8 && C == 1) || (B == 6 && C == 1)
-               || (B == 4 && C == 1) || (B == 8 && C == 2)
-               || (B == 2 && C == 1) || (B == 4 && C == 2)
-               || (B == 6 && C == 3)) {
+    if (C == 1 && B % 2 == 0) {
 
-        return halfTurn * 2 + 1;
+        petalsAmount = 2 * B;
 
-    } else if ((B == 7 && C == 3) || (B == 5 && C == 3)
-               || (B == 1 && C == 3) || (B == 2 && C == 6)
-               || (B == 8 && C == 4) || (B == 3 && C == 9)) {
-        return halfTurn * 3 + 1;
-    } else if ((B == 9 && C == 2) || (B == 7 && C == 2)
-               || (B == 5 && C == 2) || (B == 3 && C == 2)
-               || (B == 6 && C == 4) || (B == 9 && C == 6)
-               || (B == 1 && C == 2) || (B == 2 && C == 4)
-               || (B == 3 && C == 6) || (B == 4 && C == 8)) {
+    } else if (C == 1 && B % 2 != 0) {
 
-        return halfTurn * 4 + 1;
+        petalsAmount = B;
 
-    } else if ((B == 9 && C == 5) || (B == 7 && C == 5)
-               || (B == 1 && C == 5) || (B == 3 && C == 5)) {
+    } else if ((B % 2 != 0) && ( C % 2 != 0) ) {
 
-        return halfTurn * 5 + 1;
+        petalsAmount = B;
 
-    } else if ((B == 8 && C == 3) || (B == 4 && C == 3)
-               || (B == 8 && C == 6) || (B == 2 && C == 3)
-               || (B == 4 && C == 6)  ||(B == 6 && C == 9)
-               || (B == 8 && C == 1)) {
+    } else {petalsAmount = 2 * B;}
 
-        return halfTurn * 6 + 1;
-
-    } else if ((B == 9 && C == 7) || (B == 5 && C == 7)
-               || (B == 3 && C == 7) || (B == 1 && C == 7)) {
-
-        return halfTurn * 7 + 1;
-
-    } else if ((B == 9 && C == 4) || (B == 7 && C == 4)
-               || (B == 5 && C == 4) || (B == 3 && C == 4)
-               || (B == 6 && C == 8) || (B == 1 && C == 4)
-               || (B == 2 && C == 8)) {
-
-        return halfTurn * 8 + 1;
-
-    } else if ((B == 7 && C == 9) || (B == 5 && C == 9)
-               || (B == 1 && C == 9)) {
-
-        return halfTurn * 9 + 1;
-
-    } else if ((B % 2 == 0 && C == 5)) {
-
-        return halfTurn * 10 + 1;
-
-    } else if ((B == 7 && C == 6) || (B == 5 && C == 6)
-               || (B == 1 && C == 6)) {
-
-        return halfTurn * 12 + 1;
-
-    } else if ((B % 2 == 0 && C == 7)) {
-
-        return halfTurn * 14 + 1;
-
-    } else if (C == 8 && B % 2 == 1) {
-
-        return halfTurn * 16 + 1;
-
-    } else if (B % 2 == 0 && C == 9) {
-
-        return halfTurn * 18 + 1;
-
-    } else { return 180 + 1; }
+    return ((halfTurn * C * petalsAmount) / B) + 1;
 }
 
 void MainWindow::slotTimer() {
     key = timeElapsed;// time
     double x, y;
-
 
     if (key < pointCount) { // add point
 

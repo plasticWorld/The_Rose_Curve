@@ -25,22 +25,21 @@ class MainWindow : public QMainWindow {
     int pointCount = 0;
     int timeElapsed;
     int key = 0;
-	int A;
-	int B;
-	int C;
+    int A;
+    int B;
+    int C;
     Ui::MainWindow *ui;
-    QVector<QCPCurve *> rounds;// = QVector<QCPCurve *> (1);
+    QVector<QCPCurve *> rounds;
     QMap<int, QVector<QCPCurveData>> pointsOfGrid;
     QTimer *timer = new QTimer (this);
     QCPItemTracer *curveTracer;
     QCPCurve *curveByPoints;
     QVector<double> x2/*(pointCount)*/, y2/*(pointCount)*/;
-
-	int setPointCount();
-	void setupRoseCurve (QCustomPlot *widget);
+    int setPointCount();
+    void setupRoseCurve (QCustomPlot *widget);
     void setupDefaultValues();
     void areaCleaner();
-	void forGridView (QCustomPlot *widget);
+    void forGridView (QCustomPlot *widget);
 };
 
 #endif // MAINWINDOW_H
