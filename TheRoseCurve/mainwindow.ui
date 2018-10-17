@@ -628,6 +628,13 @@
      </item>
      <item row="8" column="0" colspan="3">
       <layout class="QGridLayout" name="gridLayout_4">
+       <item row="1" column="1">
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>Толщина кривой</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="3">
         <widget class="QSlider" name="SizeTracerSlider">
          <property name="minimum">
@@ -654,13 +661,6 @@
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="label_17">
-         <property name="text">
-          <string>Толщина кривой</string>
          </property>
         </widget>
        </item>
@@ -697,6 +697,13 @@
          </property>
         </spacer>
        </item>
+       <item row="2" column="1" colspan="3">
+        <widget class="QCheckBox" name="checkBox">
+         <property name="text">
+          <string>Автоматический масштаб</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
@@ -712,6 +719,22 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>AFactor</tabstop>
+  <tabstop>BFactor</tabstop>
+  <tabstop>CFactor</tabstop>
+  <tabstop>RCurveSlider</tabstop>
+  <tabstop>GCurveSlider</tabstop>
+  <tabstop>BCurveSlider</tabstop>
+  <tabstop>RTrackerSlider</tabstop>
+  <tabstop>GTrackerSlider</tabstop>
+  <tabstop>BTrackerSlider</tabstop>
+  <tabstop>SizeTracerSlider</tabstop>
+  <tabstop>SizeLineSlider</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>DefaultButton</tabstop>
+  <tabstop>BuildButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

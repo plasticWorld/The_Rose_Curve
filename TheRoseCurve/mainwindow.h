@@ -19,9 +19,10 @@ class MainWindow : public QMainWindow {
     private slots:
     void on_BuildButton_clicked();
     void on_DefaultButton_clicked();
-    void slotTimer();
+	void slotTimer();
+	void on_checkBox_clicked(bool checked);
 
-    private:
+private:
     int pointCount = 0;
     int timeElapsed;
     int key = 0;

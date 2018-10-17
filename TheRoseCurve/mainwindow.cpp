@@ -4,7 +4,7 @@
 MainWindow::MainWindow (QWidget *parent) :
     QMainWindow (parent),
     ui (new Ui::MainWindow) {
-    ui->setupUi (this);
+	ui->setupUi (this);
     ui->widget->hide();//при запуске формы область построения кривой спрятана
     setupDefaultValues();//при запуске формы устанавливаем значения по умолчанию
 }
@@ -20,7 +20,7 @@ void MainWindow::setupDefaultValues() {//значения по умолчани�
     ui->BTrackerSlider->setValue (209);
     //Значения коэффициентов в уравнении
     ui->AFactor->setValue (3);
-    ui->AFactor->setMaximum (20);
+	ui->AFactor->setMaximum (10);
     ui->BFactor->setValue (2);
     ui->BFactor->setMaximum (20);
     ui->CFactor->setValue (5);
@@ -35,6 +35,8 @@ void MainWindow::on_BuildButton_clicked() {//при нажатии на кноп
     ui->widget->show();//показать пространство для построения кривой
     //область построения кривой отчищается при каждом нажатии
     areaCleaner();
+
+
     //снимаем значения коэффициентов
     A = ui->AFactor->value();
     B = ui->BFactor->value();
@@ -62,10 +64,10 @@ void MainWindow::forGridView (QCustomPlot
     fixedTicker->setScaleStrategy (QCPAxisTickerFixed::ssNone);
     auto radiusOfPetals = A; //радиус наибольшего круга сетки равен
     //задающему длину лепестков
-    auto range = radiusOfPetals * 1.2;
-    //устанавливаем интервалы области построения осям
-    widget->xAxis->setRange (range * (-1), range);
-    widget->yAxis->setRange (range * (-1), range);
+	//auto range = radiusOfPetals * 1.2;
+
+	bool state = ui->checkBox->isChecked();
+	on_checkBox_clicked(state);
 
     //рисуем кривые для линий сетки
     for (int j = 0; j <= radiusOfPetals; j++) {
@@ -187,15 +189,15 @@ void MainWindow::setupRoseCurve (QCustomPlot *widget) {
     timer->start (0); // запускаем таймер
 }
 
-int gcd (int a, int b) {
-	return (b == 0) ? abs(a) : gcd(b, a % b);
+int gcd (int firstFractionPart, int secondFractionPart) {
+	return (secondFractionPart == 0) ? abs(firstFractionPart) : gcd(secondFractionPart, firstFractionPart % secondFractionPart);
 }
 
-void reduce (int &a, int &b) {
+void reduce (int &firstFractionPart, int &secondFractionPart) {
 
-    int c = gcd (a, b);
-    a /= c;
-    b /= c;
+	int c = gcd (firstFractionPart, secondFractionPart);
+	firstFractionPart /= c;
+	secondFractionPart /= c;
 }
 
 int MainWindow::setPointCount() {
@@ -239,8 +241,11 @@ void MainWindow::slotTimer() {
 
     curveByPoints->setData (x2, y2);
     timeElapsed += 2;
+	//on_checkBox_stateChanged(A);
     ui->widget->replot();
 }
+
+
 
 void MainWindow::areaCleaner() {
     //отчищает полотно
@@ -267,4 +272,12 @@ void MainWindow::on_DefaultButton_clicked() {
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::on_checkBox_clicked(bool checked) {
+	double arg1 = ui->AFactor->value() * 1.2;
+	if(checked){ arg1 = 12;}
+
+	ui->widget->xAxis->setRange (arg1 * (-1), arg1);
+	ui->widget->yAxis->setRange (arg1 * (-1), arg1);
 }
